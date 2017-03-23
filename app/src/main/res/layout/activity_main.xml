@@ -36,6 +36,23 @@
         android:padding="10dp"
         android:singleLine="true"
         android:textColor="@android:color/black"/>
+    <Button
+        android:id="@+id/lol"
+        android:text="Center"
+        android:layout_below="@id/query"
+        android:layout_centerHorizontal="true"
+        android:onClick="FindCenter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/lol2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/lol"
+        android:layout_below="@id/query"
+        android:text="Clear Markers"
+        android:onClick="ClearMarkers"
+        />
 
 </RelativeLayout>
 

@@ -1,13 +1,17 @@
 package com.example.hunter.mapbox;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 
 import com.mapbox.mapboxsdk.MapboxAccountManager;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.geometry.LatLngBounds;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
@@ -16,10 +20,27 @@ import com.mapbox.services.commons.models.Position;
 import com.mapbox.services.geocoding.v5.GeocodingCriteria;
 import com.mapbox.services.geocoding.v5.models.CarmenFeature;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.Iterator;
+
+
+public class MainActivity extends Activity {
 
     private MapView mapView;
     private MapboxMap map;
+private MarkerOptions Center;
+private Marker CenterMarker;
+
+
+    private ArrayList<LatLng> balls = new ArrayList<LatLng>();
+    Button b1;
+    Button b2;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
                 updateMap(position.getLatitude(), position.getLongitude());
             }
         });
+        b1 = (Button) findViewById(R.id.lol);
+        b2 = (Button) findViewById(R.id.lol2);
+
 
     }
 
@@ -69,7 +93,42 @@ public class MainActivity extends AppCompatActivity {
                 .zoom(15)
                 .build();
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 5000, null);
+
+        balls.add(new LatLng(latitude, longitude));
     }
+
+    public void FindCenter(View v) {
+        if(CenterMarker!=null) {
+            map.removeMarker(CenterMarker);
+        }
+        Iterator itr = balls.iterator();
+        /**
+         * Documentation in Mapbox Site
+         * https://www.mapbox.com/android-sdk/examples/fit-bound-camera/
+         https://www.mapbox.com/android-sdk/api/5.0.0/
+         * **/
+
+        LatLngBounds bound=new LatLngBounds.Builder()
+                .includes(balls).build();
+Center=new MarkerOptions()
+        .position(bound.getCenter())
+        .title("Center");
+
+        CenterMarker=map.addMarker(Center);
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(bound.getCenter())
+                .zoom(15)
+                .build();
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 5000, null);
+
+
+    }
+
+    public void ClearMarkers(View v) {
+        map.clear();
+       balls.clear();
+        }
+
 
     @Override
     public void onResume() {
@@ -100,4 +159,5 @@ public class MainActivity extends AppCompatActivity {
         super.onLowMemory();
         mapView.onLowMemory();
     }
+
 }
